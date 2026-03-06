@@ -1,0 +1,8 @@
+[
+  {
+    "name": "service-a",
+    "listen": "0.0.0.0:9753",
+    "upstream": "host.docker.internal:8080",
+    "enabled": true
+  }
+]
