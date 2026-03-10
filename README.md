@@ -5,10 +5,10 @@ Two services that communicate with each other through a Toxiproxy-managed networ
 ## Architecture
 
 ```
-Client -> :9753 (Toxiproxy + 5s latency) -> :8080 (Service A) -> Service B
+Client -> Order Service (:3456) -> Proxy (:9753) -> Payment Service (:8080)
 ```
 
-Toxiproxy sits between the client and Service A, introducing a configurable 5-second latency on all responses.
+Toxiproxy sits between the Order Service and the Payment Service, allowing simulation of adverse network conditions like latency.
 
 ## Prerequisites
 
@@ -27,16 +27,27 @@ Toxiproxy sits between the client and Service A, introducing a configurable 5-se
    ./setup-toxics.sh
    ```
 
-3. Run the performance test (10 concurrent requests):
+3. Run the performance test (100 requests, 10 concurrent):
    ```bash
    ./perf-test.sh
    ```
 
+## Performance Testing
+
+`perf-test.sh` uses [hey](https://github.com/rakyll/hey) via Docker to load-test the Order Service. No local install required.
+
+```bash
+# Default: 100 requests, 10 concurrent
+./perf-test.sh
+```
+
+It sends `POST /orders` requests with a JSON payload to the Order Service on port 3456. The output includes latency distribution, throughput, and status code breakdown.
+
 ## Configuration
 
-- **`toxiproxy.json`** — Defines the proxy `service-a` listening on port `9753`, forwarding to the upstream service on port `8080`.
+- **`toxiproxy.json`** — Defines the proxy listening on port `9753`, forwarding to the Payment Service on port `8080`.
 - **`setup-toxics.sh`** — Adds a 5000ms downstream latency toxic via the Toxiproxy API (`localhost:8474`).
-- **`perf-test.sh`** — Sends 10 concurrent requests to `localhost:9753` and reports per-request timing and overall wall time.
+- **`perf-test.sh`** — Runs `hey` in Docker to send concurrent POST requests to the Order Service and report performance metrics.
 
 ## Managing Toxics
 
