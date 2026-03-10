@@ -1,21 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-URL="http://host.docker.internal:3456/orders"
-CONCURRENCY=100
-DURATION=30
-RPS=100
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-echo "Running hey via Docker: ${DURATION}s, ${RPS} req/s, $CONCURRENCY concurrent"
-echo "Target: $URL"
+echo "Running k6 load test: 100 req/s for 30s"
 echo "---"
 
-docker run --rm --add-host=host.docker.internal:host-gateway \
-  williamyeh/hey \
-  -z "${DURATION}s" \
-  -q "$RPS" \
-  -c "$CONCURRENCY" \
-  -m POST \
-  -H "Content-Type: application/json" \
-  -d '{"productId": "book-123", "amount": 49.99}' \
-  "$URL"
+docker run --rm --network=host \
+  -v "$SCRIPT_DIR/perf-test.js:/scripts/perf-test.js:ro" \
+  grafana/k6 run /scripts/perf-test.js
