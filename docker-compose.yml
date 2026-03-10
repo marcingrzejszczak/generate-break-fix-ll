@@ -6,4 +6,6 @@ services:
       - "9753:9753"   # Proxy listening port for service A
     volumes:
       - ./toxiproxy.json:/config/toxiproxy.json
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     command: ["-host=0.0.0.0", "-config=/config/toxiproxy.json"]
