@@ -2,16 +2,18 @@
 set -euo pipefail
 
 URL="http://host.docker.internal:3456/orders"
-CONCURRENCY=10
-REQUESTS=100
+CONCURRENCY=100
+DURATION=30
+RPS=100
 
-echo "Running hey via Docker: $REQUESTS requests, $CONCURRENCY concurrent"
+echo "Running hey via Docker: ${DURATION}s, ${RPS} req/s, $CONCURRENCY concurrent"
 echo "Target: $URL"
 echo "---"
 
 docker run --rm --add-host=host.docker.internal:host-gateway \
   williamyeh/hey \
-  -n "$REQUESTS" \
+  -z "${DURATION}s" \
+  -q "$RPS" \
   -c "$CONCURRENCY" \
   -m POST \
   -H "Content-Type: application/json" \
