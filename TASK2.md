@@ -1,6 +1,6 @@
 # TASK 2 --- Payment Authorization Integration
 
-This task is to be done IN ADDITION to the one in Task.md. Don't modify the existing feature, add a new one.
+This task is to be done IN ADDITION to the one in TASK.md. Don't modify the existing feature, add a new one. It requires new endpoints in both order service and payment service. Do not reuse existing ones from TASK.md.
 
 ## Overview
 
